@@ -4,13 +4,16 @@ import { ImageBackground, StyleSheet, Button, Text, View, TouchableOpacity, Touc
 import { KorolJoystick } from "korol-joystick";
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-/*import { GestureHandlerRootView, PanGestureHandler,  PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";*/
+import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, { event, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import BleManager from 'react-native-ble-manager';
+import NativeEventEmitter from 'react-native/Libraries/EventEmitter/NativeEventEmitter';
+import { stringToBytes } from 'convert-string';
+
+const Buffer = require('buffer/').Buffer;
+
+const BleManagerModule =  new NativeModules.BleManager;
+const bleEmitter = new NativeEventEmitter(BleManagerModule);
 
 const image = { uri: 'https://wallpapercave.com/wp/wp1979062.jpg'};
 
@@ -42,10 +45,55 @@ const MyStack = () => {
           name='Touchpad'
           component={Touchpad}
         />
+        <Stack.Screen
+          name='Test'
+          component={Test}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
+
+const Test = ({navigaton}) => {
+
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+
+  const contextX = useSharedValue(0);
+  const contextY = useSharedValue(0);
+
+  const gesture = Gesture.Pan(event)
+  .onStart(() => {
+    contextX.value = translateX.value;
+    contextY.value = translateY.value;
+  })
+  .onUpdate((event, context) => {
+    translateX.value = event.translationX + contextX.value;
+    translateY.value = event.translationY + contextY.value;
+  });
+
+  const rStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }, { translateY: translateY.value }],
+    };
+  })
+
+  return (
+    
+      <View style={styles.container}>
+        <GestureHandlerRootView>
+          <View style={styles.container}>
+            <GestureDetector gesture={gesture}>
+              <Animated.View style={[styles.circle, rStyle]}/>
+            </GestureDetector>
+          </View>
+        </GestureHandlerRootView>
+      </View>
+  )
+}
+
+
+
 
 
 
@@ -53,12 +101,14 @@ const HomeScreen = ({navigation}) => {
 
   const gamepadClickedHandler = () => {
     navigation.navigate('Gamepad')
-    // do something
   };
 
   const touchpadClickedHandler = () => {
     navigation.navigate('Touchpad')
-    // do something
+  };
+
+  const testClickedHandler = () => {
+    navigation.navigate('Test')
   };
 
 
@@ -82,10 +132,12 @@ const HomeScreen = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={touchpadClickedHandler}
+            onPress={testClickedHandler}
             style={styles.button}>
-            <Text>Placeholder</Text>
+            <Text>Test</Text>
           </TouchableOpacity>
+
+          
       
         </View>
       </ImageBackground>
@@ -97,27 +149,6 @@ const HomeScreen = ({navigation}) => {
 
 
 const Touchpad = ({navigation}) => {
-
-  /*
-  const panGestureEvent = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>(
-    {
-    onStart: (event) => {},
-    onActive: (event) => {
-      console.log(event.translationX);
-    },
-    onEnd: (event) => {},
-    }
-  );
-  
-  return (
-    <View style={styles.container}>
-      <PanGestureHandler>
-        <Animated.View style={styles.pointer}/>
-      </PanGestureHandler>
-      <StatusBar style="auto" />
-
-    </View>
-  );*/
 
   var coordX = 0.0;
   var coordY = 0.0;
@@ -160,22 +191,6 @@ const Touchpad = ({navigation}) => {
 
 const GamePad = ({navigation}) => {
 
-  /*
-  if (Platform.OS === 'android') {
-    // Calling the permission function
-    const granted = PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-      {
-        title: 'Bluetooth Permissions',
-        message: 'We need access to bluetooth permissions',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      // Permission Granted
-      console.log('granted');
-    }
-  }*/
-
   var up_button = 'Y';
   var mr_button = 'B';
   var ml_button = 'X';
@@ -210,11 +225,8 @@ const GamePad = ({navigation}) => {
 
 
 
-  //const DeviceManager = new BleManager();
-
   const buttonClickedHandler = () => {
     console.log('You have clicked a button!');
-    // do something
   };
 
 
@@ -297,11 +309,20 @@ export default MyStack;
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
+    width: '100%',
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  circle: {
+    height: 50,
+    aspectRatio: 1,
+    backgroundColor: 'orange',
+    borderRadius: 90,
+    opacity: 0.8
   },
   image: {
     flex: 1,
