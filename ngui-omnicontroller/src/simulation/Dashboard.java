@@ -7,10 +7,12 @@ import engine.MouseAction;
 import gui.WindowGUI;
 import gui.LauncherGUI;
 
-public class DevicesControl {
+public class Dashboard {
 
-	public static void main(String[] args) throws IOException {	
-		LauncherGUI testGUI = new LauncherGUI();
+	public static void main(String[] args) throws IOException {
+		String name;
+		String adr;
+		LauncherGUI testGUI = new LauncherGUI(name, adr);
 		
 //		MouseControl mouseControl = new MouseControl();
 //		KeyboardControl keyboardControl = new KeyboardControl();

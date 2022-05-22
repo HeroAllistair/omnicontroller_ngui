@@ -1,11 +1,12 @@
 package data;
 
-public class Device {
+public class Thread {
 	
 	private String name;
 	private String address;
+	private String cmd;
 	
-	public Device() {
+	public Thread() {
 		name = null;
 		address = null;
 		
@@ -26,5 +27,13 @@ public class Device {
 	public void setAddress(String adress) {
 		this.address = adress;
 	}
+	
+	public String getCmd() {
+		return cmd;
+	}
 
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
+	}
+	
 }

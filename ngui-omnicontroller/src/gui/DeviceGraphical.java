@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 import javax.swing.JTextArea;
 
-import data.Device;
+import data.Thread;
 import data.GUI;
 
 import java.awt.image.BufferedImage;
@@ -26,11 +26,11 @@ public class DeviceGraphical extends JPanel {
 	 */
 	private static final long serialVersionUID = 788896303477211435L;
 	
-	private Device device;
+	private Thread device;
 	
 	public DeviceGraphical(String deviceName, String address) {
 		super();
-		device = new Device();
+		device = new Thread();
 		
 		if (!deviceName.equals("/")) {
 			device.setName("Name : " + deviceName);

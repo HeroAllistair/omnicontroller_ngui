@@ -13,17 +13,17 @@ public class WindowGUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 2941318999657277463L;
 
-	public WindowGUI() {
+	public WindowGUI(String name, String adr) {
 		super(GUI.WINDOWS_NAME);
       
 		JPanel displayPanel = new JPanel();
 		
-		String nameDevice = "Player 1";
+		String nameDevice = name;
 		String nameDevice2 = "Player 2";
 		String nameDevice3 = "/";
 		String nameDevice4 = "Player 4";
 		
-		String macAdr = "address1";
+		String macAdr = adr;
 		String macAdr2 = "address2";
 		String macAdr3 = "        ";
 		String macAdr4 = "address4";
