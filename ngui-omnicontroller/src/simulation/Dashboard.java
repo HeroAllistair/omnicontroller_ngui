@@ -10,9 +10,8 @@ import gui.LauncherGUI;
 public class Dashboard {
 
 	public static void main(String[] args) throws IOException {
-		String name;
-		String adr;
-		LauncherGUI testGUI = new LauncherGUI(name, adr);
+
+		LauncherGUI testGUI = new LauncherGUI();
 		
 //		MouseControl mouseControl = new MouseControl();
 //		KeyboardControl keyboardControl = new KeyboardControl();
@@ -26,7 +25,7 @@ public class Dashboard {
 		
 		
 		// Parser test
-//		MouseAction mouseAction = new MouseAction();		
+//		MouseAction mouseAction = new MouseAction();	
 //		ActionFinder actFinder = new ActionFinder();
 //		
 //		String cmd = "TRACK,200,40";
